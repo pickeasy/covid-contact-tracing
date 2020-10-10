@@ -17,7 +17,7 @@ from spec import APISPEC_SPEC
 project_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-def create_app(for_celery=False, testing=False):
+def create_app(testing=False):
     """ Application Factory. """
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -34,7 +34,7 @@ def create_app(for_celery=False, testing=False):
     register_extensions(testing)
     register_blueprints(app)
     register_shell(app)
-    register_external(skip_sentry=for_celery)
+    register_external()
 
     # Return validation errors as JSON
     @app.errorhandler(422)
@@ -66,7 +66,7 @@ def register_extensions(testing: bool):
     """ Register Flask extensions. """
 
     url = c.MONGODB_URL if not testing else c.TEST_MONGODB_URL
-    mongoengine.connect(host=url)
+    mongoengine.connect(host=url, tz_aware=True)
 
 
 def register_blueprints(app: Flask):
@@ -75,19 +75,17 @@ def register_blueprints(app: Flask):
     docs = FlaskApiSpec(app)
 
     # example blueprint
-    from blueprints.example import example_bp
-    from blueprints.example import routes as example_routes
+    from blueprints.tracing import tracing_bp
+    from blueprints.tracing import routes as example_routes
 
-    example_routes.set_routes(app, example_bp, docs)
+    example_routes.set_routes(app, tracing_bp, docs)
 
 
-def register_external(skip_sentry=False):
+def register_external():
     """ Register external integrations. """
     # sentry
     if len(c.SENTRY_DSN) == 0:
         logger.warning("Sentry DSN not set.")
-    elif skip_sentry:
-        logger.info("Skipping Sentry Initialization for Celery.")
     else:
         sentry_sdk.init(
             c.SENTRY_DSN,

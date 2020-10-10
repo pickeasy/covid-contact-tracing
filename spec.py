@@ -25,11 +25,11 @@ def format_docstring(docstring):
 
 
 TAGS = [
-    {"name": "Example", "description": format_docstring(docs.EXAMPLE_TAG)},
+    {"name": "Example", "description": format_docstring(docs.COVID_TAG)},
 ]
 
 APISPEC_SPEC = APISpec(
-    title="Example API",
+    title="COVID Contact Tracing API",
     version="v1",
     info={"description": format_docstring(docs.API_DESCRIPTION)},
     plugins=[MarshmallowPlugin()],

@@ -1,0 +1,1 @@
+from .locations_resources import LocationResource, LocationsResource

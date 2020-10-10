@@ -1,7 +1,0 @@
-# Docker Compose for development only
-version: '3.7'
-services:
-  example-redis:
-    image: redis:alpine
-    ports:
-      - 6381:6379

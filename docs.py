@@ -1,8 +1,7 @@
 API_DESCRIPTION = """
-This is a description of the API.
+COVID Contact Tracing App
 """
 
 
-EXAMPLE_TAG = """
-This is an example tag.
+COVID_TAG = """
 """
