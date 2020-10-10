@@ -7,7 +7,7 @@ from webargs import fields
 import config
 from .tracing_base_resource import TracingBaseResource
 from ..documents import Location
-from ..documents.customers import Customer
+from ..documents.customer import Customer
 
 
 class LocationsResource(TracingBaseResource):
@@ -54,7 +54,11 @@ class LocationResource(TracingBaseResource):
         if location is None:
             return {"description": "Location not found"}
 
-        customer = Customer.create(location=location, **kwargs)
+        customer = Customer.create(
+            location=location,
+            name=kwargs["name"],
+            phone_number=kwargs["phone_number"]
+        )
 
         return {
             "time_in": customer.time_in

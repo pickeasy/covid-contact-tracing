@@ -4,19 +4,19 @@ from datetime import datetime, timezone
 
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
-from mongoengine import Document, StringField, DateTimeField, ReferenceField
+from mongoengine import Document, DateTimeField, ReferenceField, BinaryField
 
 from blueprints.tracing.documents import Location
 
 
 class Customer(Document):
 
-    name = StringField(required=True)
+    name = BinaryField(required=True)
     """
     Encrypted name based on location's public key.
     """
 
-    phone_number = StringField(required=True)
+    phone_number = BinaryField(required=True)
     """
     Encrypted phone_number based on location's public key.
     """
