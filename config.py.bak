@@ -1,0 +1,20 @@
+"""Settings configuration - Configuration for environment variables can go in here."""
+
+# API
+SECRET_KEY = "replace_this"
+ORIGINS = ['*']
+
+# MongoDB
+MONGODB_URL = "mongodb://example:password@localhost:27018/starter"
+TEST_MONGODB_URL = "mongomock://localhost/test"
+
+# CORS
+FRONTEND_URL = "http://localhost:4200"
+
+SENTRY_DSN = ""
+
+# Celery Workers
+CELERY_BROKER_URL = 'redis://localhost:6381/0'  # redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6381/0'  # redis
+
+CELERY_SENTRY_DSN = ''
