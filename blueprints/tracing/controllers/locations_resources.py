@@ -27,7 +27,7 @@ class LocationsResource(TracingBaseResource):
         if not secrets.compare_digest(kwargs["api_key"], config.API_KEY):
             return {"description": "Invalid API key"}
 
-        location, private_key = Location.create(**kwargs)
+        location, private_key = Location.create(name=kwargs["name"])
 
         return {
             "key": location.key,
