@@ -13,6 +13,9 @@ flask-apispec===0.8.8
 apispec===3.3.0
 webargs~=5.5.3
 
+# cache
+redis===3.4.1
+
 # deployment
 gunicorn==20.0.4
 
