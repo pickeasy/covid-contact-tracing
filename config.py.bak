@@ -4,6 +4,9 @@
 SECRET_KEY = "replace_this"
 ORIGINS = ['*']
 
+# API auth key
+API_KEY = "test"
+
 # MongoDB
 MONGODB_URL = "mongodb://example:password@localhost:27018/starter"
 TEST_MONGODB_URL = "mongomock://localhost/test"
@@ -12,9 +15,3 @@ TEST_MONGODB_URL = "mongomock://localhost/test"
 FRONTEND_URL = "http://localhost:4200"
 
 SENTRY_DSN = ""
-
-# Celery Workers
-CELERY_BROKER_URL = 'redis://localhost:6381/0'  # redis
-CELERY_RESULT_BACKEND = 'redis://localhost:6381/0'  # redis
-
-CELERY_SENTRY_DSN = ''

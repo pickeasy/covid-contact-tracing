@@ -1,7 +1,10 @@
+import secrets
+
 from flask_apispec import doc, use_kwargs, marshal_with
 from flask_marshmallow import Schema
 from webargs import fields
 
+import config
 from .tracing_base_resource import TracingBaseResource
 from ..documents import Location
 from ..documents.customers import Customer
@@ -11,6 +14,7 @@ class LocationsResource(TracingBaseResource):
 
     class PostLocationSchema(Schema):
         name = fields.Str(description="Location name", example="Sweet Turtle Dessert", required=True)
+        api_key = fields.Str(description="API key to create a new location.")
 
     class LocationSchema(Schema):
         private_key = fields.Str(description="The RSA private key returned to the user once.")
@@ -20,6 +24,9 @@ class LocationsResource(TracingBaseResource):
     @use_kwargs(PostLocationSchema)
     @marshal_with(LocationSchema)
     def post(self, **kwargs):
+        if not secrets.compare_digest(kwargs["api_key"], config.API_KEY):
+            return {"description": "Invalid API key"}
+
         location, private_key = Location.create(**kwargs)
 
         return {
