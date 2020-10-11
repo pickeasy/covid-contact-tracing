@@ -23,7 +23,7 @@ class Customer(Document):
 
     time_in = DateTimeField(default=datetime.utcnow, required=True)
     """
-    The time that the customer registeres their information.
+    The time that the customer registers their information.
     """
 
     location = ReferenceField(Location)
@@ -54,8 +54,18 @@ class Customer(Document):
         customer.save()
         return customer
 
-    def decrypt(self, private_key) -> dict:
+    def decrypt(self, private_key_str: str) -> dict:
         """
         Return a decrypted version of the customer.
         """
-        raise NotImplementedError("To be implemented.")
+        private_key = RSA.import_key(private_key_str)
+        cipher = PKCS1_OAEP.new(key=private_key)
+
+        decrypted_name = cipher.decrypt(self.name)
+        decrypted_phone_number = cipher.decrypt(self.phone_number)
+
+        return {
+            "name": decrypted_name,
+            "phone_number": decrypted_phone_number,
+            "time_in": self.time_in
+        }
