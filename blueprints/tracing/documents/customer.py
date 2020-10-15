@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from Crypto.Cipher import PKCS1_OAEP
-from Crypto.PublicKey import RSA
 from mongoengine import Document, DateTimeField, ReferenceField, BinaryField
 
 from blueprints.tracing.documents import Location
 
+from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import padding
+
 
 class Customer(Document):
-
     name = BinaryField(required=True)
     """
     Encrypted name based on location's public key.
@@ -38,12 +38,23 @@ class Customer(Document):
 
     @classmethod
     def create(cls, name: str, phone_number: str, location: Location) -> Customer:
-        public_key = RSA.import_key(location.public_key)
-        cipher = PKCS1_OAEP.new(key=public_key)
-
-        encrypted_name = cipher.encrypt(name.encode("utf-8"))
-        encrypted_phone = cipher.encrypt(phone_number.encode("utf-8"))
-
+        public_key = serialization.load_pem_public_key(location.public_key.encode('utf-8'))
+        encrypted_name = public_key.encrypt(
+            name.encode('utf-8'),
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+        encrypted_phone = public_key.encrypt(
+            phone_number.encode('utf-8'),
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
         customer = cls(
             name=encrypted_name,
             phone_number=encrypted_phone,
@@ -54,18 +65,3 @@ class Customer(Document):
         customer.save()
         return customer
 
-    def decrypt(self, private_key_str: str) -> dict:
-        """
-        Return a decrypted version of the customer.
-        """
-        private_key = RSA.import_key(private_key_str)
-        cipher = PKCS1_OAEP.new(key=private_key)
-
-        decrypted_name = cipher.decrypt(self.name)
-        decrypted_phone_number = cipher.decrypt(self.phone_number)
-
-        return {
-            "name": decrypted_name,
-            "phone_number": decrypted_phone_number,
-            "time_in": self.time_in
-        }
