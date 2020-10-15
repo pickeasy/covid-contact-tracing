@@ -14,10 +14,10 @@ class LocationsResource(TracingBaseResource):
 
     class PostLocationSchema(Schema):
         name = fields.Str(description="Location name", example="Sweet Turtle Dessert", required=True)
+        public_key = fields.Str(description="Public key used to encode data", required=True)
         api_key = fields.Str(description="API key to create a new location.")
 
     class LocationSchema(Schema):
-        private_key = fields.Str(description="The RSA private key returned to the user once.")
         key = fields.Str(description="Key used to pass in customer information")
 
     @doc(description="Create a new location, and generate a private key that will only be shown once.")
@@ -27,11 +27,10 @@ class LocationsResource(TracingBaseResource):
         if not secrets.compare_digest(kwargs["api_key"], config.API_KEY):
             return {"description": "Invalid API key"}
 
-        location, private_key = Location.create(name=kwargs["name"])
+        location = Location.create(name=kwargs["name"], public_key=kwargs['public_key'])
 
         return {
             "key": location.key,
-            "private_key": private_key
         }
 
 
@@ -57,7 +56,7 @@ class LocationResource(TracingBaseResource):
         customer = Customer.create(
             location=location,
             name=kwargs["name"],
-            phone_number=kwargs["phone_number"]
+            phone_number=kwargs["phone_number"],
         )
 
         return {
