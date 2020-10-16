@@ -35,19 +35,22 @@ out.json public_key.txt
 
 How to get dumps.pickle?
 
-Tracing api provides data dumps for encrypted customer data which is decrypted by the following scripts
-Go to
+Run flask command to dump data in parent directory
 ```
-https://tracing.pickeasy.ca/locations/{restaurant_name}/customers
+cd ..
+flask tracing dump {restaurant_key}
+cd dumps
+ls
+dumps.pickle
 ```
-and a dumps.pickle of the customer data will be downloaded for you.
 
-out.json contains decrypted customer data of your dumps.pickle
 ```
+# EXAMPLE
 {"customers": [{"name": "Alac wong", "phone_number": "+16475040680", "location": "popeyes", "time_in": "2020-10-16 16:49:29.933000+00:00"}, {"name": "George Qiao", "phone_number": "+16475040680", "location": "popeyes", "time_in": "2020-10-16 16:49:40.149000+00:00"}, {"name": "Raymond Chen", "phone_number": "+16475040680", "location": "popeyes", "time_in": "2020-10-16 16:49:48.792000+00:00"}]}
 ```
 public_key.txt contains generated public key
 ```
+# EXAMPLE
 -----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwuxeCqs2lA+Pnrg1OqDn
 amnVuj8aO/l4y4cje3aXBDzH1dJQY2cugB3LW+MzExk8GzDgf7kp36uUjLs5knwd
