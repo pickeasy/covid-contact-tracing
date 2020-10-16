@@ -24,7 +24,7 @@ def generate_key_values(name):
         format=serialization.PublicFormat.SubjectPublicKeyInfo
     ).decode('utf-8')
     keys[name] = private_key
-    f = open('public_key.txt', 'w')
+    f = open('out/public_key.txt', 'w')
     f.write(public_key)
     f.close()
     with open('keys.json', 'w') as f_json:
@@ -36,7 +36,7 @@ def decrypt():
     """take dump of encrypted customer data of return json file decrypted"""
     with open('keys.json', 'r') as f:
         keys = json.load(f)
-    with open('dumps.pickle', 'rb') as handle:
+    with open('dumps/dumps.pickle', 'rb') as handle:
         encrypted_customers = pickle.load(handle)
     decrypted_customers = []
     for customer in encrypted_customers:
@@ -65,9 +65,31 @@ def decrypt():
         customer['name'] = decrypted_name
         customer['phone_number'] = decrypted_phone_number
         decrypted_customers.append(customer)
-    with open('out.json', 'w') as out:
+    with open('out/out.json', 'w') as out:
         json.dump({'customers': decrypted_customers}, out)
 
 
+def prompt():
+    option = input('Enter 1 to create a new key for a restaurant, 2 to decode customer data and 3 to exit script')
+    if option == '1':
+        name = input('Enter the name of your restaurant')
+        generate_key_values(name)
+        print('Public key found in public_key.txt')
+        prompt()
+    elif option == '2':
+        print('Please put a dumps.pickle inside the dumps folder')
+        start = ''
+        while start != 'y' != 'n':
+            start = input('Enter y to start, n to stop')
+        if start == 'y':
+            decrypt()
+        else:
+            prompt()
+    elif option == '3':
+        exit()
+    else:
+        prompt()
+
+
 if __name__ == '__main__':
-    decrypt()
+    prompt()
