@@ -43,4 +43,18 @@ https://tracing.pickeasy.ca/locations/{restaurant_name}/customers
 and a dumps.pickle of the customer data will be downloaded for you.
 
 out.json contains decrypted customer data of your dumps.pickle
-public_key.txt contains the generated public key when the user creates the key
+```
+{"customers": [{"name": "Alac wong", "phone_number": "+16475040680", "location": "popeyes", "time_in": "2020-10-16 16:49:29.933000+00:00"}, {"name": "George Qiao", "phone_number": "+16475040680", "location": "popeyes", "time_in": "2020-10-16 16:49:40.149000+00:00"}, {"name": "Raymond Chen", "phone_number": "+16475040680", "location": "popeyes", "time_in": "2020-10-16 16:49:48.792000+00:00"}]}
+```
+public_key.txt contains generated public key
+```
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwuxeCqs2lA+Pnrg1OqDn
+amnVuj8aO/l4y4cje3aXBDzH1dJQY2cugB3LW+MzExk8GzDgf7kp36uUjLs5knwd
+uHIvNsv/tnFtiAqDDkolOl73dd5fxeiVKFJ3qVnY/1Q35aluc7BFIXuOiuclBBOG
+tlS285ejP4XW+P1sovmEbcsk1eic5FZaZRIVyHtVmTiaAAREbVXiNB6LKMkIwOrh
+Nczq7KzGb2Btnik6EES6ikNKfr/fBlsOypRKRNxyARIobYRqJOBlbiUUL2JgIWxn
+1N587zy7KR3beJZgww3OyfelkQ9qmlXVdnEukP4NaDSUSRD0boTNhiC4laxpBu6N
+nwIDAQAB
+-----END PUBLIC KEY-----
+```
