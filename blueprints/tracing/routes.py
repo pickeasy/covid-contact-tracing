@@ -12,7 +12,6 @@ def set_routes(app: Flask, bp: Blueprint, docs: FlaskApiSpec):
     # a list of resources
     resources = [
         (LocationsResource, "/locations", "locations", ["POST"]),
-        (LocationResource, "/locations/<string:name>", "dumps", ["GET"]),
         (LocationResource, "/locations/<string:name>/customers", "customers", ["POST"]),
     ]
 
