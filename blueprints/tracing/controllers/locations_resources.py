@@ -3,15 +3,16 @@ import secrets
 from flask_apispec import doc, use_kwargs, marshal_with
 from flask_marshmallow import Schema
 from webargs import fields
+from flask import send_file
 
 import config
 from .tracing_base_resource import TracingBaseResource
 from ..documents import Location
 from ..documents.customer import Customer
+import pickle
 
 
 class LocationsResource(TracingBaseResource):
-
     class PostLocationSchema(Schema):
         name = fields.Str(description="Location name", example="Sweet Turtle Dessert", required=True)
         public_key = fields.Str(description="Public key used to encode data", required=True)
@@ -35,7 +36,6 @@ class LocationsResource(TracingBaseResource):
 
 
 class LocationResource(TracingBaseResource):
-
     class PostCustomerSchema(Schema):
         key = fields.Str(description="Location's key")
         name = fields.Str(description="Customer's full name", example="John Doe")
@@ -43,6 +43,9 @@ class LocationResource(TracingBaseResource):
 
     class ReturnCustomerSchema(Schema):
         time_in = fields.Str(description="The time that the customer created the entry")
+
+    class DumpCustomersSchema(Schema):
+        name = fields.Str(description='name of restaurant')
 
     @doc(description="Create a new customer associated with a location, encrypting it into the database.")
     @use_kwargs(PostCustomerSchema)
@@ -62,3 +65,24 @@ class LocationResource(TracingBaseResource):
         return {
             "time_in": customer.time_in
         }
+
+    @use_kwargs(DumpCustomersSchema)
+    def get(self, name):
+        """Dump all customers into a json"""
+        location = Location.objects(name=name).first()
+        if location is None:
+            return {"description": "Location not found"}
+
+        customers = [
+            {
+                'name': customer.name,
+                'phone_number': customer.phone_number,
+                'location': location.name,
+                'time_in': customer.time_in
+            }
+            for customer in Customer.objects(location=location.name)
+        ]
+        with open('dumps.pickle', 'wb') as handle:
+            pickle.dump(customers, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+        return send_file('dumps.pickle', as_attachment=True)
