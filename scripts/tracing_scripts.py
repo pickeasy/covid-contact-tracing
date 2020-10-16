@@ -71,23 +71,25 @@ def decrypt():
 
 def prompt():
     option = input(
-        "Enter 1 to create a new key for a restaurant, 2 to decode customer data and 3 to exit script"
+        "Enter 1 to create a new key for a restaurant, 2 to decode customer data and 3 to exit script\n"
     )
     if option == "1":
-        name = input("Enter the name of your restaurant")
+        name = input("Enter the name of your restaurant\n")
         generate_key_values(name)
-        print("Public key found in public_key.txt")
+        print("Public key found in public_key.txt\n")
         prompt()
     elif option == "2":
-        print("Please put a dumps.pickle inside the dumps folder")
+        print("Please put a dumps.pickle inside the dumps folder\n")
         start = ""
-        while start != "y" != "n":
-            start = input("Enter y to start, n to stop")
+        while start != "y" or start != "n":
+            start = input("Enter y to start, n to stop\n")
         if start == "y":
             decrypt()
+            print("Your data is in the out directory as out.json")
         else:
             prompt()
     elif option == "3":
+        print('Exit by user')
         exit()
     else:
         prompt()
