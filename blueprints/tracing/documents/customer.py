@@ -8,6 +8,7 @@ from blueprints.tracing.documents import Location
 
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
+import secrets
 
 
 class Customer(Document):
@@ -37,16 +38,18 @@ class Customer(Document):
         public_key = serialization.load_pem_public_key(
             location.public_key.encode("utf-8")
         )
+        secret_name = name + '|' + secrets.token_hex(48)
         encrypted_name = public_key.encrypt(
-            name.encode("utf-8"),
+            secret_name.encode("utf-8"),
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
                 label=None,
             ),
         )
+        secret_phone_number = phone_number + '|' + secrets.token_hex(48)
         encrypted_phone = public_key.encrypt(
-            phone_number.encode("utf-8"),
+            secret_phone_number.encode("utf-8"),
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
