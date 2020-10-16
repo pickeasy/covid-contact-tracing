@@ -3,7 +3,6 @@ import secrets
 from flask_apispec import doc, use_kwargs, marshal_with
 from flask_marshmallow import Schema
 from webargs import fields
-from flask import send_file
 
 import config
 from .tracing_base_resource import TracingBaseResource
@@ -15,10 +14,10 @@ import click
 
 
 @tracing_bp.cli.command('dump')
-@click.argument('name')
-def dump(name):
+@click.argument('key')
+def dump(key):
     """Dump all customers into a json"""
-    location = Location.objects(name=name).first()
+    location = Location.objects(key=key).first()
     if location is None:
         return {"description": "Location not found"}
 
@@ -31,8 +30,9 @@ def dump(name):
         }
         for customer in Customer.objects(location=location.name)
     ]
-    with open("dumps/dumps.pickle", "wb") as handle:
-        pickle.dump(customers, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    customer_obj = {'key': location.public_key, 'customers': customers}
+    with open("scripts/dumps/dumps.pickle", "wb") as handle:
+        pickle.dump(customer_obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 class LocationsResource(TracingBaseResource):

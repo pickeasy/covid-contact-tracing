@@ -5,7 +5,7 @@ import json
 import pickle
 
 
-def generate_key_values(name):
+def generate_key_values():
     """ Generates key value pairs of public and private keys"""
     with open("keys.json", "r") as f:
         keys = json.load(f)
@@ -24,7 +24,7 @@ def generate_key_values(name):
         )
         .decode("utf-8")
     )
-    keys[name] = private_key
+    keys[public_key] = private_key
     f = open("out/public_key.txt", "w")
     f.write(public_key)
     f.close()
@@ -39,12 +39,12 @@ def decrypt():
         keys = json.load(f)
     with open("dumps/dumps.pickle", "rb") as handle:
         encrypted_customers = pickle.load(handle)
+    private_key = keys[encrypted_customers["key"]]
+    key = serialization.load_pem_private_key(
+        private_key.encode("utf-8"), password=b"pickeasy-tracing"
+    )
     decrypted_customers = []
-    for customer in encrypted_customers:
-        private_key = keys[customer["location"]]
-        key = serialization.load_pem_private_key(
-            private_key.encode("utf-8"), password=b"pickeasy-tracing"
-        )
+    for customer in encrypted_customers['customers']:
         decrypted_name = key.decrypt(
             customer["name"],
             padding.OAEP(
@@ -52,7 +52,7 @@ def decrypt():
                 algorithm=hashes.SHA256(),
                 label=None,
             ),
-        ).decode("utf-8")
+        ).decode("utf-8").split('|')[0]
         decrypted_phone_number = key.decrypt(
             customer["phone_number"],
             padding.OAEP(
@@ -60,7 +60,7 @@ def decrypt():
                 algorithm=hashes.SHA256(),
                 label=None,
             ),
-        ).decode("utf-8")
+        ).decode("utf-8").split('|')[0]
         customer["time_in"] = str(customer["time_in"])
         customer["name"] = decrypted_name
         customer["phone_number"] = decrypted_phone_number
@@ -74,22 +74,15 @@ def prompt():
         "Enter 1 to create a new key for a restaurant, 2 to decode customer data and 3 to exit script\n"
     )
     if option == "1":
-        name = input("Enter the name of your restaurant\n")
-        generate_key_values(name)
+        generate_key_values()
         print("Public key found in public_key.txt\n")
         prompt()
     elif option == "2":
-        print("Please put a dumps.pickle inside the dumps folder\n")
-        start = ""
-        while start != "y" or start != "n":
-            start = input("Enter y to start, n to stop\n")
-        if start == "y":
-            decrypt()
-            print("Your data is in the out directory as out.json")
-        else:
-            prompt()
+        decrypt()
+        print('Your data in out/out.json\n')
+        prompt()
     elif option == "3":
-        print('Exit by user')
+        print('Exit by user\n')
         exit()
     else:
         prompt()
