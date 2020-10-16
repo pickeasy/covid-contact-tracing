@@ -30,38 +30,35 @@ class Customer(Document):
 
     # regulations state that we must destroy the information 30 days after
     # visiting.
-    meta = {
-        'indexes': [
-            {'fields': ['time_in'], 'expireAfterSeconds': 2592000}
-        ]
-    }
+    meta = {"indexes": [{"fields": ["time_in"], "expireAfterSeconds": 2592000}]}
 
     @classmethod
     def create(cls, name: str, phone_number: str, location: Location) -> Customer:
-        public_key = serialization.load_pem_public_key(location.public_key.encode('utf-8'))
+        public_key = serialization.load_pem_public_key(
+            location.public_key.encode("utf-8")
+        )
         encrypted_name = public_key.encrypt(
-            name.encode('utf-8'),
+            name.encode("utf-8"),
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
-                label=None
-            )
+                label=None,
+            ),
         )
         encrypted_phone = public_key.encrypt(
-            phone_number.encode('utf-8'),
+            phone_number.encode("utf-8"),
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
-                label=None
-            )
+                label=None,
+            ),
         )
         customer = cls(
             name=encrypted_name,
             phone_number=encrypted_phone,
-            time_in=datetime.utcnow().replace(tzinfo=timezone.utc)
+            time_in=datetime.utcnow().replace(tzinfo=timezone.utc),
         )
 
         customer.location = location
         customer.save()
         return customer
-
