@@ -24,10 +24,10 @@ def generate_key_values():
         .decode("utf-8")
     )
     keys[public_key] = private_key
-    with open('out/public_key.txt', "w+"):
+    with open('out/public_key.txt', "w+") as f:
         f.write(public_key)
-    with open("keys.json", "w") as f_json:
-        json.dump(keys, f_json)
+    with open("keys.json", "w") as f:
+        json.dump(keys, f)
 
 
 def decrypt():
@@ -75,7 +75,7 @@ def prompt():
         print("Public key found in public_key.txt\n")
         prompt()
     elif option == "2":
-        print('Make sure to run flask tracing dump {key} before this option\n')
+        print('Make sure to run flask dump {key} before this option\n')
         decrypt()
         print('Your data is in out/out.json\n')
         prompt()

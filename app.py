@@ -13,6 +13,7 @@ import config as c
 import loggers
 from extensions import logger
 from spec import APISPEC_SPEC
+from cli import register_commands
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -35,6 +36,7 @@ def create_app(testing=False):
     register_blueprints(app)
     register_shell(app)
     register_external()
+    register_commands(app)
 
     # Return validation errors as JSON
     @app.errorhandler(422)
