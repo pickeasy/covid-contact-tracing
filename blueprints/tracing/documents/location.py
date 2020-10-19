@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 import secrets
-from typing import Tuple
 
 from mongoengine import Document, StringField
-
-from Crypto.PublicKey import RSA
 
 
 class Location(Document):
@@ -26,14 +23,9 @@ class Location(Document):
     """
 
     @classmethod
-    def create(cls, name) -> Tuple[Location, str]:
-        private_key = RSA.generate(2048)
-        public_key = private_key.publickey()
-        private_pem = private_key.export_key().decode()
-        public_pem = public_key.export_key().decode()
-
+    def create(cls, name, public_key) -> Location:
         key = secrets.token_hex(48)
 
-        location = cls(name=name, public_key=public_pem, key=key).save()
+        location = cls(name=name, public_key=public_key, key=key).save()
 
-        return location, private_pem
+        return location
