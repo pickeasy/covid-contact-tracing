@@ -24,10 +24,10 @@ def generate_key_values():
         .decode("utf-8")
     )
     keys[public_key] = private_key
-    with open('out/public_key.txt', "w+"):
+    with open('out/public_key.txt', "w+") as f:
         f.write(public_key)
-    with open("keys.json", "w") as f_json:
-        json.dump(keys, f_json)
+    with open("keys.json", "w") as f:
+        json.dump(keys, f)
 
 
 def decrypt():
