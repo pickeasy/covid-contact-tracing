@@ -9,7 +9,6 @@ def generate_key_values():
     """ Generates key value pairs of public and private keys"""
     with open("keys.json", "r") as f:
         keys = json.load(f)
-    f.close()
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     private_key = key.private_bytes(
         encoding=serialization.Encoding.PEM,
@@ -25,12 +24,10 @@ def generate_key_values():
         .decode("utf-8")
     )
     keys[public_key] = private_key
-    f = open("out/public_key.txt", "w")
-    f.write(public_key)
-    f.close()
+    with open('out/public_key.txt', "w"):
+        f.write(public_key)
     with open("keys.json", "w") as f_json:
         json.dump(keys, f_json)
-    f_json.close()
 
 
 def decrypt():
@@ -80,7 +77,7 @@ def prompt():
     elif option == "2":
         print('Make sure to run flask tracing dump {key} before this option\n')
         decrypt()
-        print('Your data in out/out.json\n')
+        print('Your data is in out/out.json\n')
         prompt()
     elif option == "3":
         print('Exit by user\n')
