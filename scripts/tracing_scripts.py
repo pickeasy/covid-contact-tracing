@@ -24,7 +24,7 @@ def generate_key_values():
         .decode("utf-8")
     )
     keys[public_key] = private_key
-    with open('out/public_key.txt', "w"):
+    with open('out/public_key.txt', "w+"):
         f.write(public_key)
     with open("keys.json", "w") as f_json:
         json.dump(keys, f_json)
@@ -62,7 +62,7 @@ def decrypt():
         customer["name"] = decrypted_name
         customer["phone_number"] = decrypted_phone_number
         decrypted_customers.append(customer)
-    with open("out/out.json", "w") as out:
+    with open("out/out.json", "w+") as out:
         json.dump({"customers": decrypted_customers}, out)
 
 
