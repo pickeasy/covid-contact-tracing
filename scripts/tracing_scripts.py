@@ -75,7 +75,7 @@ def prompt():
         print("Public key found in public_key.txt\n")
         prompt()
     elif option == "2":
-        print('Make sure to run flask tracing dump {key} before this option\n')
+        print('Make sure to run flask dump {key} before this option\n')
         decrypt()
         print('Your data is in out/out.json\n')
         prompt()
