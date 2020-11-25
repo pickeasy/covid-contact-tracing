@@ -8,7 +8,7 @@ from .controllers import LocationResource
 def set_routes(app: Flask, bp: Blueprint, docs: FlaskApiSpec):
     # a list of resources
     resources = [
-        (LocationResource, "/locations/<string:name>/customers", "customers", ["POST"]),
+        (LocationResource, "/locations/<string:slug>/customers", "customers", ["POST"]),
     ]
 
     for resource, route, name, methods in resources:

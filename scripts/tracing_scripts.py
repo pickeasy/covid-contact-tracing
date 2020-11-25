@@ -10,7 +10,7 @@ url = "mongodb://pickeasy:pickeasy@localhost:27018/menus?authSource=admin"
 connect(host=url, tz_aware=True)
 
 
-def generate_key_values(name):
+def generate_key_values(slug):
     """ Generates key value pairs of public and private keys"""
     with open("keys.json", "r") as f:
         keys = json.load(f)
@@ -29,31 +29,31 @@ def generate_key_values(name):
         .decode("utf-8")
     )
     keys[public_key] = private_key
-    location = Location.create(name=name, public_key=public_key)
+    location = Location.create(slug=slug, public_key=public_key)
     location.save()
     print(f"Your key\n{location.key}\n")
     with open("keys.json", "w") as f:
         json.dump(keys, f)
 
 
-def decrypt(key: str):
+def decrypt(slug: str):
     """take dump of encrypted customer data of return json file decrypted"""
 
-    location = Location.objects(key=key).first()
+    location = Location.objects(slug=slug).first()
     if location is None:
-        return {"description": "Location not found"}
+        return "Location not found"
 
     customers = [
         {
             "name": customer.name,
             "phone_number": customer.phone_number,
-            "location": location.name,
+            "location": location.slug,
             "time_in": customer.time_in,
         }
-        for customer in Customer.objects(location=location.name)
+        for customer in Customer.objects(location=slug)
     ]
     customer_obj = {"key": location.public_key, "customers": customers}
-    with open("scripts/dumps/dumps.pickle", "wb+") as handle:
+    with open("../scripts/dumps/dumps.pickle", "wb+") as handle:
         pickle.dump(customer_obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     with open("keys.json", "r") as f:
@@ -103,12 +103,12 @@ def prompt():
         "Enter 1 to create a new key for a restaurant, 2 to decode customer data and 3 to exit script\n"
     )
     if option == "1":
-        name = input("Enter location name\n")
-        generate_key_values(name)
+        slug = input("Enter location name\n")
+        generate_key_values(slug)
         prompt()
     elif option == "2":
-        key = input("Enter target tracing key\n")
-        decrypt(key)
+        slug = input("Enter target location name\n")
+        decrypt(slug)
         print("Your data is in out/out.json\n")
         prompt()
     elif option == "3":

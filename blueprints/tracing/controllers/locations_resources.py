@@ -26,11 +26,11 @@ class LocationResource(TracingBaseResource):
     )
     @use_kwargs(PostCustomerSchema)
     @marshal_with(ReturnCustomerSchema)
-    def post(self, name, **kwargs):
+    def post(self, slug, **kwargs):
         # search for location, return 404 if not found
-        location = Location.objects(name=name, key=kwargs["key"]).first()
+        location = Location.objects(slug=slug, key=kwargs["key"]).first()
         if location is None:
-            return {"description": "Location not found"}
+            return {"description": "Location not found"}, 404
 
         customer = Customer.create(
             location=location, name=kwargs["name"], phone_number=kwargs["phone_number"],
