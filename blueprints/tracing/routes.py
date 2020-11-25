@@ -2,16 +2,12 @@ from flask import Blueprint, Flask
 from flask_apispec import FlaskApiSpec
 
 from . import bp_name
-from .controllers import (
-    LocationsResource,
-    LocationResource,
-)
+from .controllers import LocationResource
 
 
 def set_routes(app: Flask, bp: Blueprint, docs: FlaskApiSpec):
     # a list of resources
     resources = [
-        (LocationsResource, "/locations", "locations", ["POST"]),
         (LocationResource, "/locations/<string:name>/customers", "customers", ["POST"]),
     ]
 
