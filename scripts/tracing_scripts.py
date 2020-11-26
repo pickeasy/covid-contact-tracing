@@ -4,9 +4,10 @@ from cryptography.hazmat.primitives.asymmetric import padding
 import json
 import pickle
 from blueprints.tracing.documents import Location, Customer
+import config
 from mongoengine import connect
 
-url = "mongodb://pickeasy:pickeasy@localhost:27018/menus?authSource=admin"
+url = config.MONGODB_URL
 connect(host=url, tz_aware=True)
 
 
