@@ -9,7 +9,6 @@ from .tracing_base_resource import TracingBaseResource
 from ..documents import Location
 from ..documents.customer import Customer
 
-
 class LocationResource(TracingBaseResource):
     class PostCustomerSchema(Schema):
         key = fields.Str(description="Location's key")
