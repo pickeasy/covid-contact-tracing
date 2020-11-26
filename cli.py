@@ -5,9 +5,8 @@ import click
 
 
 def register_commands(app: Flask):
-
-    @app.cli.command('dump')
-    @click.argument('key')
+    @app.cli.command("dump")
+    @click.argument("key")
     def dump(key):
         """Dump all customers into a json"""
         location = Location.objects(key=key).first()
@@ -23,6 +22,6 @@ def register_commands(app: Flask):
             }
             for customer in Customer.objects(location=location.name)
         ]
-        customer_obj = {'key': location.public_key, 'customers': customers}
+        customer_obj = {"key": location.public_key, "customers": customers}
         with open("scripts/dumps/dumps.pickle", "wb+") as handle:
             pickle.dump(customer_obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
