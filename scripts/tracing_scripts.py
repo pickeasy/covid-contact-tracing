@@ -2,7 +2,6 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 import json
-import pickle
 from blueprints.tracing.documents import Location, Customer
 import config
 from mongoengine import connect
@@ -54,19 +53,19 @@ def decrypt(slug: str):
         for customer in Customer.objects(location=slug)
     ]
     customer_obj = {"key": location.public_key, "customers": customers}
-    with open("../scripts/dumps/dumps.pickle", "wb+") as handle:
-        pickle.dump(customer_obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     with open("keys.json", "r") as f:
         keys = json.load(f)
-    with open("dumps/dumps.pickle", "rb") as handle:
-        encrypted_customers = pickle.load(handle)
-    private_key = keys[encrypted_customers["key"]]
+    try:
+        private_key = keys[customer_obj["key"]]
+    except KeyError:
+        print('key not found')
+        return
     key = serialization.load_pem_private_key(
         private_key.encode("utf-8"), password=b"pickeasy-tracing"
     )
     decrypted_customers = []
-    for customer in encrypted_customers["customers"]:
+    for customer in customer_obj["customers"]:
         decrypted_name = (
             key.decrypt(
                 customer["name"],
