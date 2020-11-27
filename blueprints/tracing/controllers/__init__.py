@@ -1,1 +1,1 @@
-from .locations_resources import LocationResource, LocationsResource
+from .locations_resources import LocationResource

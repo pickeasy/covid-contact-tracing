@@ -38,7 +38,7 @@ class Customer(Document):
         public_key = serialization.load_pem_public_key(
             location.public_key.encode("utf-8")
         )
-        secret_name = name + '|' + secrets.token_hex(48)
+        secret_name = name + "|" + secrets.token_hex(48)
         encrypted_name = public_key.encrypt(
             secret_name.encode("utf-8"),
             padding.OAEP(
@@ -47,7 +47,7 @@ class Customer(Document):
                 label=None,
             ),
         )
-        secret_phone_number = phone_number + '|' + secrets.token_hex(48)
+        secret_phone_number = phone_number + "|" + secrets.token_hex(48)
         encrypted_phone = public_key.encrypt(
             secret_phone_number.encode("utf-8"),
             padding.OAEP(

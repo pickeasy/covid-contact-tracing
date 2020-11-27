@@ -7,7 +7,7 @@ from mongoengine import Document, StringField
 
 class Location(Document):
 
-    name = StringField(primary_key=True)
+    slug = StringField(primary_key=True)
     """
     Name of location for identification purposes.
     """
@@ -23,9 +23,9 @@ class Location(Document):
     """
 
     @classmethod
-    def create(cls, name, public_key) -> Location:
+    def create(cls, slug, public_key) -> Location:
         key = secrets.token_hex(48)
 
-        location = cls(name=name, public_key=public_key, key=key).save()
+        location = cls(slug=slug, public_key=public_key, key=key).save()
 
         return location
