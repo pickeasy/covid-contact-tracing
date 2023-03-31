@@ -14,7 +14,7 @@ apispec===3.3.0
 webargs~=5.5.3
 
 # cache
-redis===3.4.1
+redis===4.4.4
 
 # deployment
 gunicorn==20.0.4
