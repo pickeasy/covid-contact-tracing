@@ -1,5 +1,5 @@
 # core packages
-flask==1.1.2
+flask==2.3.2
 flask_cors
 
 # database
